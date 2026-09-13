@@ -1,4 +1,4 @@
-// #include "header.h"
+#include "header.h"
 #include <stdlib.h>
 #include <unistd.h>
 int ft_atoi(const char *str)
@@ -714,4 +714,66 @@ size_t strlcat(char *restrict dst, const char *restrict src, size_t dstsize)
     }
     dst[dst_len + i] = '\0';
     return (dst_len + src_len);
+}
+t_list *ft_lstnew(void const *content, size_t content_size)
+{
+    t_list *p;
+
+    p = malloc(sizeof(t_list));
+    if (!p)
+        return (NULL);
+    if (!content)
+    {
+        p->content = NULL;
+        p->content_size = 0;
+        p->next = NULL;
+    }
+    else
+    {
+        p->content = malloc(content_size);
+        if (!p->content)
+        {
+            free(p);
+            return (NULL);
+        }
+        ft_memcpy(p->content, content, content_size);
+        p->content_size = content_size;
+        p->next = NULL;
+    }
+    return (p);
+}
+void ft_lstdelone(t_list **alst, void (*del)(void *, size_t))
+{
+    if (!del || !*alst || !alst)
+        return;
+    del((*alst)->content, (*alst)->content_size);
+    free(*alst);
+    *alst = NULL;
+}
+void ft_lstdel(t_list **alst, void (*del)(void *, size_t))
+{
+    if (!del || !*alst || !alst)
+        return;
+    ft_lstdel((&(*alst)->next), del);
+    ft_lstdelone(alst, del);
+}
+void ft_lstadd(t_list **alst, t_list *new)
+{
+    if (!alst || !new)
+        return;
+    new->next = (*alst);
+    *alst = new;
+}
+void ft_lstiter(t_list *lst, void (*f)(t_list *elem))
+{
+    if (!lst || !f)
+        return;
+    while (lst != NULL)
+    {
+        f(lst);
+        lst = lst->next;
+    }
+}
+t_list *ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
+{
 }
