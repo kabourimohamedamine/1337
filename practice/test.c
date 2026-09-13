@@ -776,4 +776,34 @@ void ft_lstiter(t_list *lst, void (*f)(t_list *elem))
 }
 t_list *ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
 {
+    t_list *head;
+    t_list *new_node;
+    t_list *new_lst;
+    t_list *temp;
+
+    if (!lst || !f)
+        return (NULL);
+    head = NULL;
+    new_lst = NULL;
+    while (lst)
+    {
+        new_node = f(lst);
+        if (!new_node)
+        {
+            while (head)
+            {
+                temp = head->next;
+                free(head);
+                head = temp;
+            }
+            return (NULL);
+        }
+        if (!head)
+            head = new_node;
+        else
+            new_lst->next = new_node;
+        new_lst = new_node;
+        lst = lst->next;
+    }
+    return (head);
 }
